@@ -33,20 +33,45 @@
             </div>
         </nav>
     </header>
-    <div class="array-container">
-        {% for i in arr %}
-        <div class="array-bar-wrapper">
-            <div class="array-bars" style="height:{{ i }}px; background-color: #FFA500;"></div>
-            <div class="bar-value">{{ i }}</div>
+    <div class="controls">
+        <button onclick="setSpeed('low')">Low Speed</button>
+        <button onclick="setSpeed('medium')">Medium Speed</button>
+        <button onclick="setSpeed('high')">High Speed</button>
+    </div>
+    <div class = "array-boxborder">
+        <div class="array-container">
+            {% for i in arr %}
+            <div class="array-bar-wrapper">
+                <div class="array-bars" style="height:{{ i }}px; background-color: #FFA500;"></div>
+                <div class="bar-value">{{ i }}</div>
+            </div>
+            {% endfor %}
         </div>
-        {% endfor %}
     </div>
     
     <script>
-        const ANIMATION_SPEED_MS = 50;
         const PRIMARY_COLOR = '#00FFFF';
         const SECONDARY_COLOR = 'red';
     
+        let ANIMATION_SPEED_MS = 50; // Default speed
+
+            function setSpeed(speed) {
+                switch(speed) {
+                    case 'low':
+                        ANIMATION_SPEED_MS = 100; // Slow speed
+                        break;
+                    case 'medium':
+                        ANIMATION_SPEED_MS = 50; // Medium speed
+                        break;
+                    case 'high':
+                        ANIMATION_SPEED_MS = 20; // Fast speed
+                        break;
+                    default:
+                        ANIMATION_SPEED_MS = 50; // Default speed if something goes wrong
+                        break;
+                }
+            }
+
         function merge_sort() {
             $.ajax({
                 type: "POST",
@@ -87,6 +112,7 @@
                 }
             });
         }
+
         
     </script>
     

@@ -72,6 +72,8 @@ a {
     color: #fff;
 }
 
+
+
 /* Responsive Hamburger Menu */
 @media only screen and (max-width: 768px) {
     .nav-menu {
@@ -115,8 +117,69 @@ a {
     .hamburger.active .bar:nth-child(3) {
         transform: translateY(-8px) rotate(-45deg);
     }
+    .array-container {
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        margin: 0 auto;
+        padding-top: 2rem;
+        height: 100px; 
+    }
+    .array-bars {
+        width: 10px;
+        margin: 3.5px;
+        background-color: #47474d;
+        position: relative;
+         /* Force the height */
+    }
+    
+    .array-bar-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 0 10px; /* Increased horizontal space between bar wrappers */
+    }
+    
+    
+    .bar-value {
+        color: #000000;
+        font-size: 3rem;
+        padding: 5px; /* Increased padding for better visibility */
+        background: #00f7ff; /* Adjusted background for better contrast */
+        position: relative;
+        margin-top: 15px; /* Increased space between the bar and the value */
+        text-align: center;
+        border-radius: 4px; /* Optional: add border-radius for rounded corners */
+    }
 }
 
+
+.controls {
+    text-align: center;
+    margin: 1rem 0;
+}
+
+.controls button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    margin: 0 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.controls button:hover {
+    background-color: #0056b3;
+}
+
+.array-boxborder{
+    margin: 50px;
+    padding: 10px;
+    border: solid black 5px;
+    
+}
 /* Array Visualization Styles */
 .array-container {
     display: flex;
@@ -134,7 +197,6 @@ a {
     position: relative;
      /* Force the height */
 }
-
 
 .array-bar-wrapper {
     display: flex;
@@ -167,11 +229,3 @@ a {
 }
 
 /* Responsive Array Visualizer */
-@media only screen and (max-width: 768px) {
-    .array-container {
-        flex-direction: row;
-        justify-content: center;
-        padding: 1rem;
-    }
-
-}

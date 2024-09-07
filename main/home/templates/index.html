@@ -14,16 +14,10 @@
             <a href="#" class="nav-logo">DSA Visualizer Project</a>
             <ul class="nav-menu">
                 <li class="nav-item">
-                    <a href="/" class="nav-link">Create New Array</a>
+                    <a href="/" class="nav-link">Generate New Array</a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link" onclick="merge_sort()">Merge Sort</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">Projects</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">Contact</a>
+                    <a href="https://himanshuprajapati55.github.io/resume-057/" class="nav-link">Contact Me</a>
                 </li>
             </ul>
             <div class="hamburger">
@@ -33,12 +27,22 @@
             </div>
         </nav>
     </header>
+    
+    <div class="sorting-controls">
+        <button onclick="merge_sort()">Merge Sort</button>
+        <button><a onclick="quick_sort()">Quick Sort</a></button>
+        <button><a onclick="bubble_sort()">Bubble Sort</a></button>
+        <button><a onclick="selection_sort()">Selection Sort</a></button>
+        <button><a onclick="insertion_sort()">Insertion Sort</a></button>
+    </div>
+    
     <div class="controls">
         <button onclick="setSpeed('low')">Low Speed</button>
         <button onclick="setSpeed('medium')">Medium Speed</button>
         <button onclick="setSpeed('high')">High Speed</button>
     </div>
-    <div class = "array-boxborder">
+    
+    <div class="array-boxborder">
         <div class="array-container">
             {% for i in arr %}
             <div class="array-bar-wrapper">
@@ -50,27 +54,26 @@
     </div>
     
     <script>
-        const PRIMARY_COLOR = '#00FFFF';
-        const SECONDARY_COLOR = 'red';
-    
+        const PRIMARY_COLOR = '#ff00d9';
+        const SECONDARY_COLOR = 'yellow';
         let ANIMATION_SPEED_MS = 50; // Default speed
 
-            function setSpeed(speed) {
-                switch(speed) {
-                    case 'low':
-                        ANIMATION_SPEED_MS = 100; // Slow speed
-                        break;
-                    case 'medium':
-                        ANIMATION_SPEED_MS = 50; // Medium speed
-                        break;
-                    case 'high':
-                        ANIMATION_SPEED_MS = 20; // Fast speed
-                        break;
-                    default:
-                        ANIMATION_SPEED_MS = 50; // Default speed if something goes wrong
-                        break;
-                }
+        function setSpeed(speed) {
+            switch(speed) {
+                case 'low':
+                    ANIMATION_SPEED_MS = 100; // Slow speed
+                    break;
+                case 'medium':
+                    ANIMATION_SPEED_MS = 50; // Medium speed
+                    break;
+                case 'high':
+                    ANIMATION_SPEED_MS = 20; // Fast speed
+                    break;
+                default:
+                    ANIMATION_SPEED_MS = 50; // Default speed if something goes wrong
+                    break;
             }
+        }
 
         function merge_sort() {
             $.ajax({
@@ -80,32 +83,28 @@
                     csrfmiddlewaretoken: '{{ csrf_token }}'
                 },
                 success: function(animations) {
-                    try {
-                        const arrayBars = document.getElementsByClassName('array-bars');
-                        const barValues = document.getElementsByClassName('bar-value'); // Add this line to get bar values
-                        animations.forEach((animation, i) => {
-                            const isColorChange = i % 3 !== 2;
-                            if (isColorChange) {
-                                const [barOneIdx, barTwoIdx] = animation;
+                    const arrayBars = document.getElementsByClassName('array-bars');
+                    const barValues = document.getElementsByClassName('bar-value');
+                    animations.forEach((animation, i) => {
+                        const isColorChange = i % 3 !== 2;
+                        if (isColorChange) {
+                            const [barOneIdx, barTwoIdx] = animation;
+                            const barOneStyle = arrayBars[barOneIdx].style;
+                            const barTwoStyle = arrayBars[barTwoIdx].style;
+                            const color = i % 3 === 0 ? SECONDARY_COLOR : PRIMARY_COLOR;
+                            setTimeout(() => {
+                                barOneStyle.backgroundColor = color;
+                                barTwoStyle.backgroundColor = color;
+                            }, i * ANIMATION_SPEED_MS);
+                        } else {
+                            setTimeout(() => {
+                                const [barOneIdx, newHeight] = animation;
                                 const barOneStyle = arrayBars[barOneIdx].style;
-                                const barTwoStyle = arrayBars[barTwoIdx].style;
-                                const color = i % 3 === 0 ? SECONDARY_COLOR : PRIMARY_COLOR;
-                                setTimeout(() => {
-                                    barOneStyle.backgroundColor = color;
-                                    barTwoStyle.backgroundColor = color;
-                                }, i * ANIMATION_SPEED_MS);
-                            } else {
-                                setTimeout(() => {
-                                    const [barOneIdx, newHeight] = animation;
-                                    const barOneStyle = arrayBars[barOneIdx].style;
-                                    barOneStyle.height = `${newHeight}px`;
-                                    barValues[barOneIdx].textContent = newHeight; // Update the text content
-                                }, i * ANIMATION_SPEED_MS);
-                            }
-                        });
-                    } catch (e) {
-                        console.error("Failed to parse JSON:", e);
-                    }
+                                barOneStyle.height = `${newHeight}px`;
+                                barValues[barOneIdx].textContent = newHeight; // Update the text content
+                            }, i * ANIMATION_SPEED_MS);
+                        }
+                    });
                 },
                 error: function(xhr, status, error) {
                     console.error("AJAX Error:", status, error);
@@ -113,8 +112,163 @@
             });
         }
 
+        function quick_sort() {
+            $.ajax({
+                type: "POST",
+                url: '{% url "quicksort" %}',
+                data: {
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                success: function(animations) {
+                    animations = JSON.parse(animations); // Ensure it is parsed if needed
+                    const arrayBars = document.getElementsByClassName('array-bars');
+                    const barValues = document.getElementsByClassName('bar-value');
+                    animations.forEach((animation, i) => {
+                        const isColorChange = (i % 6 === 0) || (i % 6 === 1);
+                        if (isColorChange) {
+                            const color = (i % 6 === 0) ? SECONDARY_COLOR : PRIMARY_COLOR;
+                            const [barOneIndex, barTwoIndex] = animation;
+                            if (barOneIndex === -1) return;
+                            const barOneStyle = arrayBars[barOneIndex].style;
+                            const barTwoStyle = arrayBars[barTwoIndex].style;
+                            setTimeout(() => {
+                                barOneStyle.backgroundColor = color;
+                                barTwoStyle.backgroundColor = color;
+                            }, i * ANIMATION_SPEED_MS);
+                        } else {
+                            const [barIndex, newHeight] = animation;
+                            if (barIndex === -1) return;
+                            const barStyle = arrayBars[barIndex].style;
+                            setTimeout(() => {
+                                barStyle.height = `${newHeight}px`;
+                                barValues[barIndex].textContent = newHeight;
+                            }, i * ANIMATION_SPEED_MS);
+                        }
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error("AJAX Error:", status, error);
+                }
+            });
+        }
+        
+
+        function bubble_sort() {
+            $.ajax({
+                type: "POST",
+                url: '{% url "bubblesort" %}',
+                data: {
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                success: function(animations){
+                    const arrayBars = document.getElementsByClassName('array-bars');
+                    const barValues = document.getElementsByClassName('bar-value');
+                    animations.forEach((animation, i) => {
+                        const isColorChange = (i % 4 === 0) || (i % 4 === 1);
+                        if (isColorChange) {
+                            const color = (i % 4 === 0) ? SECONDARY_COLOR : PRIMARY_COLOR;
+                            const [barOneIndex, barTwoIndex] = animation;
+                            if (barOneIndex === -1) return;
+                            const barOneStyle = arrayBars[barOneIndex].style;
+                            const barTwoStyle = arrayBars[barTwoIndex].style;
+                            setTimeout(() => {
+                                barOneStyle.backgroundColor = color;
+                                barTwoStyle.backgroundColor = color;
+                            }, i * ANIMATION_SPEED_MS);
+                        } else {
+                            const [barIndex, newHeight] = animation;
+                            if (barIndex === -1) return;
+                            const barStyle = arrayBars[barIndex].style;
+                            setTimeout(() => {
+                                barStyle.height = `${newHeight}px`;
+                                barValues[barIndex].textContent = newHeight; // Update the text content
+                            }, i * ANIMATION_SPEED_MS);
+                        }
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error("AJAX Error:", status, error);
+                }
+            });
+        }
+
+        function selection_sort() {
+            $.ajax({
+                type: "POST",
+                url: '{% url "selectionsort" %}',
+                data: {
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                success: function(animations){
+                    const arrayBars = document.getElementsByClassName('array-bars');
+                    const barValues = document.getElementsByClassName('bar-value');
+                    animations.forEach((animation, i) => {
+                        const isColorChange = (animation[0] === 999) || (animation[0] === 9999);
+                        if (isColorChange) {
+                            const color = (animation[0] === 999) ? SECONDARY_COLOR : PRIMARY_COLOR;
+                            const [temp, barOneIndex, barTwoIndex] = animation;
+                            if (barOneIndex === undefined || barTwoIndex === undefined) return;
+                            const barOneStyle = arrayBars[barOneIndex].style;
+                            const barTwoStyle = arrayBars[barTwoIndex].style;
+                            setTimeout(() => {
+                                barOneStyle.backgroundColor = color;
+                                barTwoStyle.backgroundColor = color;
+                            }, i * ANIMATION_SPEED_MS);
+                        } else {
+                            const [temp, barIndex, newHeight] = animation;
+                            if (barIndex === undefined) return;
+                            const barStyle = arrayBars[barIndex].style;
+                            setTimeout(() => {
+                                barStyle.height = `${newHeight}px`;
+                                barValues[barIndex].textContent = newHeight; // Update the text content
+                            }, i * ANIMATION_SPEED_MS);
+                        }
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error("AJAX Error:", status, error);
+                }
+            });
+        }
+
+        function insertion_sort() {
+            $.ajax({
+                type: "POST",
+                url: '{% url "insertionsort" %}',
+                data: {
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                success: function(animations){
+                    var arr = JSON.parse(animations);
+            
+                    for (let i = 0; i < arr.length; i++) {
+                        const isColorChange = (arr[i][0] === 999) || (arr[i][0] === 9999);
+                        const arrayBars = document.getElementsByClassName('array-bars');
+                        if(isColorChange === true) {
+                            const color = (arr[i][0] === 999) ? SECONDARY_COLOR : PRIMARY_COLOR;
+                            const [temp, barOneIndex, barTwoIndex] = arr[i];
+                            const barOneStyle = arrayBars[barOneIndex].style;
+                            const barTwoStyle = arrayBars[barTwoIndex].style;
+                            setTimeout(() => {
+                                barOneStyle.backgroundColor = color;
+                                barTwoStyle.backgroundColor = color;
+                            },i * ANIMATION_SPEED_MS);
+                        }
+                        else {
+                            const [temp, barIndex, newHeight] = arr[i];
+                            const barStyle = arrayBars[barIndex].style;
+                            setTimeout(() => {
+                                barStyle.height = `${newHeight}px`;
+                            },i * ANIMATION_SPEED_MS);
+                        }
+                    }
+                }
+            });
+        }
+        
+
+
         
     </script>
-    
 </body>
 </html>
